@@ -32,20 +32,16 @@ const navbarContent = `<nav>
     </div>
 </nav>`;
 
-const aboutContent = `<%- include('partials/head') %>
+const generatePageBoilerplate = (title) => {
+    return `<%- include('partials/head') %>
 <%- include('partials/navbar') %>
-<h1>About</h1>
+<h1>${title}</h1>
 <%- include('partials/footer') %>`;
+};
 
-const contactContent = `<%- include('partials/head') %>
-<%- include('partials/navbar') %>
-<h1>Contact</h1>
-<%- include('partials/footer') %>`;
-
-const indexContent = `<%- include('partials/head') %>
-<%- include('partials/navbar') %>
-<h1>Welcome!</h1>
-<%- include('partials/footer') %>`
+const aboutContent = generatePageBoilerplate("About");
+const contactContent = generatePageBoilerplate("Contact");
+const indexContent = generatePageBoilerplate("Welcome!");
 
 const generatePartialsList = (dir) => {
     return [
