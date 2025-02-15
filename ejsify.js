@@ -1,7 +1,7 @@
 const { program } = require('commander');
-const { create } = require('./create');
-const { serve } = require('./serve');
-const { build } = require("./build");
+const { create } = require('./cmds/create');
+const { serve } = require('./cmds/serve');
+const { build } = require("./cmds/build");
 
 program
     .name('ejsify')
