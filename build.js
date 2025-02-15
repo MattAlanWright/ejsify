@@ -66,4 +66,4 @@ const build = (siteRootDir, distDir) => {
     });
 }
 
-build(process.argv[2], process.argv[3]);
+module.exports.build = build;
