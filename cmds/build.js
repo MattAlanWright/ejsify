@@ -4,7 +4,7 @@ const path = require("path");
 const fs = require('fs');
 const process = require('process');
 
-const build = (siteRootDir, distDir) => {
+const build = (siteRootDir, distDir, doDestructiveClean = false) => {
     const absRootDir = path.resolve(siteRootDir);
     if (!fs.existsSync(absRootDir)) {
         console.log(`No such directory '${absRootDir}'`);
@@ -14,11 +14,27 @@ const build = (siteRootDir, distDir) => {
     // Start from clean 'dist' directory.
     const absDistDir = path.resolve(distDir);
     if (fs.existsSync(absDistDir)) {
-        console.log(`Deleting existing ${absDistDir}...`);
-        fs.rmSync(absDistDir, { recursive: true, force: true });
+        if (doDestructiveClean) {
+            console.log(`Deleting existing ${absDistDir}...`);
+            fs.rmSync(absDistDir, { recursive: true, force: true });
+
+            console.log(`Creating ${absDistDir}...`);
+            fs.mkdirSync(absDistDir);
+        }
+        else {
+            console.log(`Cleaning ${absDistDir}...`);
+            const items = [];
+            fs.readdirSync(absDistDir).forEach(item => {
+                if (item === ".git") return;
+                items.push(path.join(absDistDir, item));
+            });
+
+            items.forEach(item => {
+                console.log(`\tDeleting ${item}`);
+                fs.rmSync(item, { recursive: true, force: true });
+            });
+        }
     }
-    console.log(`Creating ${absDistDir}...`);
-    fs.mkdirSync(absDistDir);
 
     // Copy everything from 'public' directly to 'dist'.
     // These are static/non-EJS files needed in your site
@@ -28,6 +44,8 @@ const build = (siteRootDir, distDir) => {
         console.log(`Cannot find '${publicDir}'`);
         return false;
     }
+
+    console.log("Copying public files...");
     const publicDirContents = fs.readdirSync(publicDir);
     publicDirContents.forEach(item => {
         const src = path.join(publicDir, item);
